@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "displayName": "SL Toolbox",
   "description": "Mes outils Unity essentiels.",
-  "unity": "6000.0.58f1",
+  "unity": "6000.0",
   "author": {
     "name": "Romain UTR"
   }
