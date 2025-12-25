@@ -1,0 +1,18 @@
+{
+    "name": "RomainUTR.SLToolbox.Editor",
+    "rootNamespace": "RomainUTR.SLToolbox.BetterUnity.Editor",
+    "references": [
+        "GUID:67927fd64a50c4c629ddccad7f33e1e7"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
