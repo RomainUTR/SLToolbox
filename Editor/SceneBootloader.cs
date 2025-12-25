@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 
-namespace RomainUTR.SLToolbox.BetterUnity
+namespace RomainUTR.SLToolbox.Editor
 {
     public static class SceneBootloader
     {

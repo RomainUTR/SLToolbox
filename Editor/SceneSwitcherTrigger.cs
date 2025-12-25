@@ -1,9 +1,9 @@
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using RomainUTR.SLToolbox.BetterUnity;
+using RomainUTR.SLToolbox;
 
-namespace RomainUTR.SLToolbox.BetterUnity.Editor
+namespace RomainUTR.SLToolbox.Editor
 {
     [InitializeOnLoad]
     public static class SceneSwitcherTrigger

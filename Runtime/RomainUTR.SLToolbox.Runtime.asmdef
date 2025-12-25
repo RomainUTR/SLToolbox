@@ -1,6 +1,6 @@
 {
     "name": "RomainUTR.SLToolbox.Runtime",
-    "rootNamespace": "RomainUTR.SLToolbox.BetterUnity.Runtime",
+    "rootNamespace": "RomainUTR.SLToolbox.Runtime",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

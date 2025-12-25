@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace RomainUTR.SLToolbox.BetterUnity.Editor
+namespace RomainUTR.SLToolbox.Editor
 {
     public static class SmartGrouper
     {

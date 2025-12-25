@@ -1,8 +1,8 @@
 {
     "name": "RomainUTR.SLToolbox.Editor",
-    "rootNamespace": "RomainUTR.SLToolbox.BetterUnity.Editor",
+    "rootNamespace": "RomainUTR.SLToolbox.Editor",
     "references": [
-        "GUID:67927fd64a50c4c629ddccad7f33e1e7"
+        "RomainUTR.SLToolbox.Runtime"
     ],
     "includePlatforms": [
         "Editor"

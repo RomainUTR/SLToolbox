@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Linq;
 using System.IO;
 
-namespace RomainUTR.SLToolbox.BetterUnity
+namespace RomainUTR.SLToolbox.Editor
 {
     public class SceneSwitcherContent : PopupWindowContent
     {

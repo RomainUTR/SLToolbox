@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 
-namespace RomainUTR.SLToolbox.BetterUnity.Editor
+namespace RomainUTR.SLToolbox.Editor
 {
     public static class ScreenshotTool
     {
