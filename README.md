@@ -22,7 +22,7 @@ Click Add.
 
 **Scene Bootloader:** Enable it via Tools > SL Toolbox > Play From First Scene. Forces the game to start from your Scene 0 (e.g., Main Menu) even if you are currently working inside a Level scene.
 
-**High-Res Screenshot Tool (Ctrl+Alt+K):** Capture crispy, high-resolution screenshots directly from the editor game view, perfect for your portfolio or marketing materials. Access it via the menu Tools > SL Toolbox > Screenshot Tool.
+**High-Res Screenshot Tool (Ctrl+Alt+K):** Capture crispy, high-resolution screenshots directly from the editor game view, perfect for your portfolio or marketing materials. Access it via the menu Tools > SL Toolbox > Take High-Res Screenshot.
 
 ### 📜 Runtime Extensions (Code Faster)
 **.GetRandom() Extension:** No need to type Random.Range(0, list.Count) anymore.
