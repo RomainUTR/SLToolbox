@@ -16,7 +16,7 @@ Click Add.
 
 ## 💎 What's Inside?
 ### ⚡ Editor Tools (Work Faster)
-**Scene Switcher (Ctrl+Shift+S):** A quick popup window to switch scenes in 2 seconds. You can also trigger it by clicking the scene name in the Hierarchy.
+**Scene Switcher:** A quick popup window to switch scenes in 2 seconds. You can trigger it by clicking the scene name in the Hierarchy.
 
 **Smart Grouper (Ctrl+G):** Select multiple objects and press Ctrl+G. It groups them cleanly under a new parent object positioned exactly at the center of your selection (Barycenter). Fully supports Undo.
 
