@@ -24,6 +24,8 @@ Click Add.
 
 **High-Res Screenshot Tool (Ctrl+Alt+K):** Capture crispy, high-resolution screenshots directly from the editor game view, perfect for your portfolio or marketing materials. Access it via the menu Tools > SL Toolbox > Take High-Res Screenshot.
 
+**Drop To Ground (Alt+D):** Drop selected Game Object(s) to the ground of the scene. Fully supports Undo.
+
 ### 📜 Runtime Extensions (Code Faster)
 **.GetRandom() Extension:** No need to type Random.Range(0, list.Count) anymore.
 
