@@ -15,7 +15,7 @@ namespace RomainUTR.SLToolbox.Editor
 
         private static void OnHierarchyGUI(int instanceID, Rect selectionRect)
         {
-            GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            GameObject go = EditorUtility.EntityIdToObject(instanceID) as GameObject;
 
             if (go == null)
             {
