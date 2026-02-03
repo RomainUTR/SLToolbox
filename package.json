@@ -1,0 +1,10 @@
+{
+  "name": "com.romainutr.sltoolbox",
+  "version": "1.0.1",
+  "displayName": "SL Toolbox",
+  "description": "SceneSwitcher, Bootloader, Smart Group and some useful tools",
+  "unity": "6000.0",
+  "author": {
+    "name": "Romain UTR"
+  }
+}

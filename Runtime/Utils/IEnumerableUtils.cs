@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RomainUTR.SLToolbox.Runtime
+namespace RomainUTR.SLToolbox
 {
     public static class IEnumerableUtils
     {
