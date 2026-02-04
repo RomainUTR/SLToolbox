@@ -5,18 +5,21 @@ using RomainUTR.SLToolbox;
 
 namespace RomainUTR.SLToolbox.Editor
 {
-    public class SLEditor : UnityEditor.Editor
+    [CustomEditor(typeof(MonoBehaviour), true)]
+    [CanEditMultipleObjects]
+    public class GlobalSLEditor : UnityEditor.Editor
     {
         public override void OnInspectorGUI()
         {
-            base.OnInspectorGUI();
+            DrawDefaultInspector();
             DrawSLButtons();
         }
 
         private void DrawSLButtons()
         {
-            var targetObject = target;
-            var methods = targetObject.GetType().GetMethods(
+            var targetType = target.GetType();
+
+            var methods = targetType.GetMethods(
                 BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
 
             foreach (var method in methods)
