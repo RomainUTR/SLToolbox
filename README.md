@@ -2,15 +2,24 @@
 
 A collection of **"Quality of Life"** tools for Unity, designed to speed up your editor workflow, clean up your inspectors, and simplify daily scripting.
 
-## 🚀 Installation (Clean & Isolated)
+## 🚀 Installation
 
-This tool is packaged for the **Unity Package Manager**. It stays isolated in your *Packages* folder and keeps your *Assets* clean.
+You have two options to install SL Toolbox:
 
-1. In Unity, open the Package Manager (**Window > Package Manager**).
-2. Click the **+** button in the top left corner.
-3. Select **"Add package from git URL..."**.
-4. Paste the repository URL: *https://github.com/RomainUTR/SLToolbox.git*
-5. Click **Add**.
+### Option A: The "Pro" Way (Recommended)
+*Keeps your Assets folder clean and allows easy updates via Package Manager.*
+
+1. Open Unity **Package Manager** (Window > Package Manager).
+2. Click **+** > **Add package from git URL...**
+3. Paste: `https://github.com/RomainUTR/SLToolbox.git`
+4. Click **Add**.
+
+### Option B: The Classic Way (.unitypackage)
+*Downloads the files directly into your project's Assets folder.*
+
+1. Go to the **[Releases Page](https://github.com/RomainUTR/SLToolbox/releases/latest)**.
+2. Download the latest `.unitypackage` file.
+3. Double-click it to import it into your project.
 
 ---
 
