@@ -41,6 +41,14 @@ namespace RomainUTR.SLToolbox.Editor
 
                     EditorGUI.BeginChangeCheck();
 
+                    Color defaultColor = GUI.backgroundColor;
+                    bool isRequiredError = IsRequiredAndEmpty(prop);
+
+                    if (isRequiredError)
+                    {
+                        GUI.backgroundColor = new Color(1f, 0.4f, 0.4f);
+                    }
+
                     if (HasInlineAttribute(prop))
                     {
                         DrawInlineEditor(prop);
@@ -50,24 +58,19 @@ namespace RomainUTR.SLToolbox.Editor
                         EditorGUILayout.PropertyField(prop, true);
                     }
 
+                    GUI.backgroundColor = defaultColor;
+
                     if (EditorGUI.EndChangeCheck())
                     {
-                        serializedObject.ApplyModifiedProperties(); 
+                        serializedObject.ApplyModifiedProperties();
 
                         var callbackAttr = GetAttribute<SLCallbackAttribute>(prop);
-
                         if (callbackAttr != null)
                         {
-                            MethodInfo method = target.GetType().GetMethod(callbackAttr.MethodName,
-                                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
+                            MethodInfo method = GetMethodViaReflection(target.GetType(), callbackAttr.MethodName);
                             if (method != null)
                             {
                                 method.Invoke(target, null);
-                            }
-                            else
-                            {
-                                Debug.LogWarning($"[SLToolbox] Method '{callbackAttr.MethodName}' not found for callback !");
                             }
                         }
                     }
@@ -80,19 +83,34 @@ namespace RomainUTR.SLToolbox.Editor
             serializedObject.ApplyModifiedProperties();
         }
 
+        private bool IsRequiredAndEmpty(SerializedProperty prop)
+        {
+            if (prop.propertyType == SerializedPropertyType.ObjectReference)
+            {
+                if (prop.objectReferenceValue == null)
+                {
+                    return GetAttribute<SLRequiredAttribute>(prop) != null;
+                }
+            }
+            else if (prop.type == "SceneReference")
+            {
+                var innerProp = prop.FindPropertyRelative("sceneAsset");
+
+                if (innerProp != null && innerProp.objectReferenceValue == null)
+                {
+                    return GetAttribute<SLRequiredAttribute>(prop) != null;
+                }
+            }
+
+            return false;
+        }
+
         private bool HasInlineAttribute(SerializedProperty prop)
         {
             if (prop.propertyType == SerializedPropertyType.ObjectReference)
             {
-                var field = target.GetType().GetField(prop.name,
-                     BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
-                if (field != null)
-                {
-                    return field.GetCustomAttribute<SLInlineAttribute>() != null;
-                }
+                return GetAttribute<SLInlineAttribute>(prop) != null;
             }
-
             return false;
         }
 
@@ -102,35 +120,46 @@ namespace RomainUTR.SLToolbox.Editor
 
             if (prop.objectReferenceValue == null) return;
 
-            EditorGUI.indentLevel++;
-            EditorGUILayout.BeginVertical(GUI.skin.box);
+            GUILayout.Space(-4f);
 
-            prop.isExpanded = EditorGUILayout.Foldout(prop.isExpanded, "Settings (Inline)");
+            int oldIndent = EditorGUI.indentLevel;
+            EditorGUI.indentLevel = 0;
+
+            UnityEditor.Editor editor = null;
+            string key = prop.propertyPath;
+
+            if (!_cachedEditors.TryGetValue(key, out editor) || editor.target != prop.objectReferenceValue)
+            {
+                if (editor != null) DestroyImmediate(editor);
+                editor = UnityEditor.Editor.CreateEditor(prop.objectReferenceValue);
+                _cachedEditors[key] = editor;
+            }
+
+            prop.isExpanded = EditorGUILayout.InspectorTitlebar(prop.isExpanded, editor.target);
+
+            EditorGUI.indentLevel = oldIndent;
 
             if (prop.isExpanded)
             {
-                string key = prop.propertyPath;
-                UnityEditor.Editor editor = null;
+                editor.serializedObject.Update();
+                SerializedProperty innerProp = editor.serializedObject.GetIterator();
 
-                if (!_cachedEditors.TryGetValue(key, out editor) || editor.target != prop.objectReferenceValue)
+                if (innerProp.NextVisible(true))
                 {
-                    if (editor != null) DestroyImmediate(editor);
-                    editor = UnityEditor.Editor.CreateEditor(prop.objectReferenceValue);
-                    _cachedEditors[key] = editor;
+                    do
+                    {
+                        if (innerProp.name == "m_Script") continue;
+                        EditorGUILayout.PropertyField(innerProp, true);
+                    }
+                    while (innerProp.NextVisible(false));
                 }
-
-                editor.OnInspectorGUI();
+                editor.serializedObject.ApplyModifiedProperties();
             }
-
-            EditorGUILayout.EndVertical();
-            EditorGUI.indentLevel--;
         }
 
         private void DrawSLButtons()
         {
-            var targetType = target.GetType();
-
-            var methods = targetType.GetMethods(
+            var methods = target.GetType().GetMethods(
                 BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
 
             foreach (var method in methods)
@@ -165,11 +194,29 @@ namespace RomainUTR.SLToolbox.Editor
 
         private T GetAttribute<T>(SerializedProperty prop) where T : System.Attribute
         {
-            var field = target.GetType().GetField(prop.name,
-                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
+            FieldInfo field = GetFieldViaReflection(target.GetType(), prop.name);
             if (field == null) return null;
             return field.GetCustomAttribute<T>();
+        }
+
+        private FieldInfo GetFieldViaReflection(System.Type type, string fieldName)
+        {
+            if (type == null) return null;
+            FieldInfo field = type.GetField(fieldName,
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+            if (field != null) return field;
+            return GetFieldViaReflection(type.BaseType, fieldName);
+        }
+
+        private MethodInfo GetMethodViaReflection(System.Type type, string methodName)
+        {
+            if (type == null) return null;
+            MethodInfo method = type.GetMethod(methodName,
+                BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+
+            if (method != null) return method;
+            return GetMethodViaReflection(type.BaseType, methodName);
         }
     }
 }
