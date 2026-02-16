@@ -45,6 +45,9 @@ public string currentWeapon;
 
 [SLButton("Test Attack")] 
 public void PerformAttack() { ... }
+
+[SLReadOnly]
+public int currentHP;
 ```
 
 ### 🔗 Robust Scene Management
