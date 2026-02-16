@@ -26,6 +26,7 @@ Turn your inspector into a powerful dashboard without writing custom editors. Ju
 
 #### 🛡️ Safety & Debug
 * **`[SLReadOnly]`**: Shows a variable in the inspector but prevents editing (great for debug values).
+* **`[SLRequired]`**: Turns the field **RED** if the reference is missing. Stops `NullReferenceException` before they happen!
 * **`[SLButton("Label")]`**: Adds a button to trigger any function directly from the editor.
 
 #### 🧠 Logic & Dropdowns
