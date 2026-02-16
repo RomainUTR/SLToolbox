@@ -14,7 +14,7 @@ namespace RomainUTR.SLToolbox.Editor
 
         private void OnDisable()
         {
-            foreach(var editor in _cachedEditors.Values)
+            foreach (var editor in _cachedEditors.Values)
             {
                 DestroyImmediate(editor);
             }
@@ -39,15 +39,39 @@ namespace RomainUTR.SLToolbox.Editor
                         continue;
                     }
 
+                    EditorGUI.BeginChangeCheck();
+
                     if (HasInlineAttribute(prop))
                     {
                         DrawInlineEditor(prop);
-                    } else
+                    }
+                    else
                     {
                         EditorGUILayout.PropertyField(prop, true);
                     }
-                }
 
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        serializedObject.ApplyModifiedProperties(); 
+
+                        var callbackAttr = GetAttribute<SLCallbackAttribute>(prop);
+
+                        if (callbackAttr != null)
+                        {
+                            MethodInfo method = target.GetType().GetMethod(callbackAttr.MethodName,
+                                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+                            if (method != null)
+                            {
+                                method.Invoke(target, null);
+                            }
+                            else
+                            {
+                                Debug.LogWarning($"[SLToolbox] Method '{callbackAttr.MethodName}' not found for callback !");
+                            }
+                        }
+                    }
+                }
                 while (prop.NextVisible(false));
             }
 
@@ -137,6 +161,15 @@ namespace RomainUTR.SLToolbox.Editor
                     GUI.backgroundColor = originalColor;
                 }
             }
+        }
+
+        private T GetAttribute<T>(SerializedProperty prop) where T : System.Attribute
+        {
+            var field = target.GetType().GetField(prop.name,
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+            if (field == null) return null;
+            return field.GetCustomAttribute<T>();
         }
     }
 }

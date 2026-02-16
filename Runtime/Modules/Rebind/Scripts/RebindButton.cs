@@ -1,13 +1,16 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using RomainUTR.SLToolbox;
+using System.Collections.Generic;
 
 public class RebindButton : MonoBehaviour
 {
     [Header("Input Configuration")]
     [SerializeField] private InputActionReference actionReference;
 
-    [Tooltip("Index of the binding in the action (0 for single, 1+ for composites like WASD)")]
+    [SLInfoBox("Select the direction (ex: Up/Down) or the specific button.")]
+    [SLDropdown("GetBindingOptions"), SLCallback("UpdateBindingIndex")]
     [SerializeField] private int bindingIndex;
 
     [Header("Configuration UI")]
@@ -88,6 +91,50 @@ public class RebindButton : MonoBehaviour
             string displayString = actionReference.action.GetBindingDisplayString(bindingIndex,
                 InputBinding.DisplayStringOptions.DontUseShortDisplayNames);
             bindingText.text = displayString.ToUpper();
+        }
+    }
+
+    private IEnumerable<SLDropdownOption> GetBindingOptions()
+    {
+        var options = new List<SLDropdownOption>();
+
+        if (actionReference == null || actionReference.action == null)
+        {
+            options.Add(new SLDropdownOption("Need to assign an action", -1));
+            return options;
+        }
+
+        var bindings = actionReference.action.bindings;
+
+        for (int i = 0; i < bindings.Count; i++)
+        {
+            var binding = bindings[i];
+            if (binding.isComposite) continue;
+            string label;
+            
+            if (binding.isPartOfComposite)
+            {
+                label = $"{binding.name.ToUpper()} [{binding.groups}]";
+            }
+            else
+            {
+                string name = string.IsNullOrEmpty(binding.name) 
+                    ? UnityEngine.InputSystem.InputControlPath.ToHumanReadableString(binding.effectivePath) 
+                    : binding.name;
+                
+                label = $"{name} [{binding.groups}]";
+            }
+            options.Add(new SLDropdownOption($"{i}: {label}", i));
+        }
+
+        return options;
+    }
+
+    private void UpdateBindingIndex()
+    {
+        if (Application.isPlaying)
+        {
+            UpdateUI();
         }
     }
 }
