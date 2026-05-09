@@ -1,8 +1,9 @@
-using UnityEngine;
-using UnityEditor;
-using System.Reflection;
+﻿using RomainUTR.SLToolbox;
+using RomainUTR.SLToolbox.Runtime;
 using System.Collections.Generic;
-using RomainUTR.SLToolbox;
+using System.Reflection;
+using UnityEditor;
+using UnityEngine;
 
 namespace RomainUTR.SLToolbox.Editor
 {
@@ -36,6 +37,11 @@ namespace RomainUTR.SLToolbox.Editor
                         {
                             EditorGUILayout.PropertyField(prop);
                         }
+                        continue;
+                    }
+
+                    if (!ShouldDrawProperty(prop))
+                    {
                         continue;
                     }
 
@@ -217,6 +223,25 @@ namespace RomainUTR.SLToolbox.Editor
 
             if (method != null) return method;
             return GetMethodViaReflection(type.BaseType, methodName);
+        }
+
+        private bool ShouldDrawProperty(SerializedProperty prop)
+        {
+            var showIfAttr = GetAttribute<SLShowIfAttribute>(prop);
+
+            if (showIfAttr != null)
+            {
+                SerializedProperty conditionProp = serializedObject.FindProperty(showIfAttr.ConditionName);
+
+                if (conditionProp != null && conditionProp.propertyType == SerializedPropertyType.Boolean)
+                {
+                    return conditionProp.boolValue;
+                }
+
+                Debug.LogWarning($"SLShowIf: Impossible de trouver le bool�en '{showIfAttr.ConditionName}'");
+            }
+
+            return true;
         }
     }
 }
