@@ -31,6 +31,11 @@ namespace RomainUTR.SLToolbox.Editor
             GUI.SetNextControlName("SearchField");
             searchQuery = GUILayout.TextField(searchQuery, EditorStyles.toolbarSearchField);
 
+            if (GUILayout.Button("+", EditorStyles.toolbarButton, GUILayout.Width(25)))
+            {
+                EditorApplication.delayCall += CreateNewScene;
+            }
+
             if (Event.current.type == EventType.Repaint && string.IsNullOrEmpty(searchQuery))
             {
                 GUI.FocusControl("SearchField");
@@ -49,8 +54,11 @@ namespace RomainUTR.SLToolbox.Editor
 
                 if (GUILayout.Button(sceneName, EditorStyles.miniButton))
                 {
-                    LoadScene(path);
-                    editorWindow.Close();
+                    EditorApplication.delayCall += () =>
+                    {
+                        LoadScene(path);
+                        editorWindow.Close();
+                    };
                 }
             }
 
@@ -62,6 +70,21 @@ namespace RomainUTR.SLToolbox.Editor
             if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
             {
                 EditorSceneManager.OpenScene(path);
+            }
+        }
+
+        private void CreateNewScene()
+        {
+            if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            {
+                string path = EditorUtility.SaveFilePanelInProject("Create New Scene", "New Scene", "unity", "Choose location for the new scene");
+
+                if (!string.IsNullOrEmpty(path))
+                {
+                    UnityEngine.SceneManagement.Scene newScene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
+                    EditorSceneManager.SaveScene(newScene, path);
+                    editorWindow.Close();
+                }
             }
         }
     }
