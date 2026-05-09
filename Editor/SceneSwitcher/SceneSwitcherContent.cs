@@ -1,8 +1,9 @@
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using System.Linq;
 using System.IO;
+using System.Collections.Generic;
 
 namespace RomainUTR.SLToolbox.Editor
 {
@@ -12,12 +13,17 @@ namespace RomainUTR.SLToolbox.Editor
         private Vector2 scrollPos;
         private string[] allScenePaths;
 
+        private const string PREFS_KEY = "RomainUTR_SLToolbox_FavScenes";
+        private List<string> favoriteScenes = new List<string>();
+
         public SceneSwitcherContent()
         {
             allScenePaths = AssetDatabase.FindAssets("t:Scene")
                 .Select(guid => AssetDatabase.GUIDToAssetPath(guid))
                 .Where(path => path.StartsWith("Assets/"))
                 .ToArray();
+
+            LoadFavorites();
         }
 
         public override Vector2 GetWindowSize()
@@ -26,6 +32,42 @@ namespace RomainUTR.SLToolbox.Editor
         }
 
         public override void OnGUI(Rect rect)
+        {
+            DrawToolbar();
+
+            scrollPos = GUILayout.BeginScrollView(scrollPos);
+
+            var filteredScenes = allScenePaths
+                .Where(path => path.IndexOf(searchQuery, System.StringComparison.OrdinalIgnoreCase) >= 0)
+                .ToArray();
+
+            var favScenesToDisplay = filteredScenes.Where(path => favoriteScenes.Contains(path)).ToArray();
+            var otherScenesToDisplay = filteredScenes.Where(path => !favoriteScenes.Contains(path)).ToArray();
+
+            if (favScenesToDisplay.Length > 0)
+            {
+                GUILayout.Label("Favorites", EditorStyles.boldLabel);
+                foreach (string path in favScenesToDisplay)
+                {
+                    DrawSceneRow(path, true);
+                }
+
+                EditorGUILayout.Space(5);
+            }
+
+            if (otherScenesToDisplay.Length > 0)
+            {
+                GUILayout.Label("All Scenes", EditorStyles.boldLabel);
+                foreach (string path in otherScenesToDisplay)
+                {
+                    DrawSceneRow(path, false);
+                }
+            }
+
+            GUILayout.EndScrollView();
+        }
+
+        private void DrawToolbar()
         {
             GUILayout.BeginHorizontal(EditorStyles.toolbar);
             GUI.SetNextControlName("SearchField");
@@ -41,36 +83,75 @@ namespace RomainUTR.SLToolbox.Editor
                 GUI.FocusControl("SearchField");
             }
             GUILayout.EndHorizontal();
-
-            scrollPos = GUILayout.BeginScrollView(scrollPos);
-
-            var filteredScenes = allScenePaths
-                .Where(path => path.IndexOf(searchQuery, System.StringComparison.OrdinalIgnoreCase) >= 0)
-                .ToArray();
-
-            foreach (string path in filteredScenes)
-            {
-                string sceneName = Path.GetFileNameWithoutExtension(path);
-
-                if (GUILayout.Button(sceneName, EditorStyles.miniButton))
-                {
-                    EditorApplication.delayCall += () =>
-                    {
-                        LoadScene(path);
-                        editorWindow.Close();
-                    };
-                }
-            }
-
-            GUILayout.EndScrollView();
         }
 
-        private void LoadScene(string path)
+        private void DrawSceneRow(string path, bool isFavorite)
         {
-            if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            string sceneName = Path.GetFileNameWithoutExtension(path);
+
+            GUILayout.BeginHorizontal();
+
+            string starIcon = isFavorite ? "★" : "☆";
+
+            Color defaultColor = GUI.color;
+
+            if (isFavorite)
             {
-                EditorSceneManager.OpenScene(path);
+                GUI.color = SLToolboxPreferences.GetStarFavoriteColor();
             }
+
+            if (GUILayout.Button(starIcon, EditorStyles.label, GUILayout.Width(20)))
+            {
+                ToggleFavorite(path);
+            }
+
+            GUI.color = defaultColor;
+
+            if (GUILayout.Button(sceneName, EditorStyles.miniButton))
+            {
+                EditorApplication.delayCall += () =>
+                {
+                    LoadScene(path);
+                    editorWindow.Close();
+                };
+            }
+
+            GUILayout.EndHorizontal();
+        }
+
+        private void LoadFavorites()
+        {
+            string savedData = EditorPrefs.GetString(PREFS_KEY, "");
+
+            if (!string.IsNullOrEmpty(savedData))
+            {
+                string[] paths = savedData.Split(',');
+                favoriteScenes = new List<string>(paths);
+            }
+            else
+            {
+                favoriteScenes = new List<string>();
+            }
+        }
+
+        private void ToggleFavorite(string path)
+        {
+            if (favoriteScenes.Contains(path))
+            {
+                favoriteScenes.Remove(path);
+            }
+            else
+            {
+                favoriteScenes.Add(path);
+            }
+
+            SaveFavorites();
+        }
+
+        private void SaveFavorites()
+        {
+            string dataToSave = string.Join(",", favoriteScenes);
+            EditorPrefs.SetString(PREFS_KEY, dataToSave);
         }
 
         private void CreateNewScene()
@@ -85,6 +166,14 @@ namespace RomainUTR.SLToolbox.Editor
                     EditorSceneManager.SaveScene(newScene, path);
                     editorWindow.Close();
                 }
+            }
+        }
+
+        private void LoadScene(string path)
+        {
+            if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            {
+                EditorSceneManager.OpenScene(path);
             }
         }
     }
