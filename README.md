@@ -32,6 +32,7 @@ Turn your inspector into a powerful dashboard without writing custom editors. Ju
 * **`[SLTitle("Title", "Color")]`**: Adds a colored header and separator to organize your variables.
 * **`[SLInfoBox("Message")]`**: Displays a help box (Info, Warning, or Error) above a field.
 * **`[SLInline]`**: Edit **ScriptableObjects** or other references directly inside the current inspector (nested view).
+* **`[SLShowIf("Boolean")]`**: Display the reference onfy if a specific boolean is on true.
 
 #### 🛡️ Safety & Debug
 * **`[SLReadOnly]`**: Shows a variable in the inspector but prevents editing (great for debug values).
@@ -76,7 +77,7 @@ void Load() {
 ```
 
 ### ⚡ Editor Tools (Work Faster)
-* **`Scene Switcher`:** A quick popup window to switch scenes in 2 seconds. Trigger it by clicking the scene name in the Hierarchy.
+* **`Scene Switcher`:** A quick popup window to switch scenes in 2 seconds. Trigger it by clicking the scene name in the Hierarchy. You can also create a new scene and determined some scenes at favorites.
 
 * **`Smart Grouper (Ctrl+G)`:** Groups selected objects under a new parent positioned exactly at the center of your selection (Barycenter). Fully supports Undo.
 
