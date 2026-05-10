@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEditor;
-using System.Linq;
 
 namespace RomainUTR.SLToolbox.Editor
 {
@@ -19,44 +18,30 @@ namespace RomainUTR.SLToolbox.Editor
 
             foreach (Transform t in selectedTransforms)
             {
-                Collider col = t.GetComponent<Collider>();
+                Renderer rend = t.GetComponentInChildren<Renderer>();
 
-                float startY = t.position.y + 10f;
-                if (col != null) startY = col.bounds.max.y + 2f;
-
-                Vector3 rayOrigin = new Vector3(t.position.x, startY, t.position.z);
-
-                Debug.DrawRay(rayOrigin, Vector3.down * 20f, Color.yellow, 2f);
-
-                RaycastHit[] hits = Physics.RaycastAll(rayOrigin, Vector3.down, 100f);
-
-                RaycastHit groundHit = new RaycastHit();
-                bool foundGround = false;
-
-                foreach (var hit in hits.OrderBy(h => h.distance))
+                if (rend == null)
                 {
-                    if (hit.transform == t || hit.transform.IsChildOf(t))
-                        continue;
-
-                    groundHit = hit;
-                    foundGround = true;
-                    break;
+                    Debug.LogWarning($"SL Toolbox: Cannot drop {t.name} to ground. No Renderer found on the object or its children.");
+                    continue;
                 }
 
-                if (foundGround)
-                {
-                    float distPivotToBottom = 0f;
-                    if (col != null)
-                    {
-                        distPivotToBottom = t.position.y - col.bounds.min.y;
-                    }
+                bool rendWasEnabled = rend.enabled;
+                rend.enabled = false;
 
-                    t.position = new Vector3(t.position.x, groundHit.point.y + distPivotToBottom, t.position.z);
+                Vector3 rayOrigin = t.position;
+                if (Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, 1000f))
+                {
+                    float distPivotToBottom = t.position.y - rend.bounds.min.y;
+
+                    t.position = new Vector3(t.position.x, hit.point.y + distPivotToBottom, t.position.z);
                     movedCount++;
                 }
+
+                rend.enabled = rendWasEnabled;
             }
 
-            if (movedCount > 0) Debug.Log($"Dropped {movedCount} objects.");
+            if (movedCount > 0) Debug.Log($"SL Toolbox: Dropped {movedCount} objects cleanly to the ground.");
         }
     }
 }
