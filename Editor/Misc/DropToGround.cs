@@ -5,7 +5,7 @@ namespace RomainUTR.SLToolbox.Editor
 {
     public static class DropToGround
     {
-        [MenuItem("Tools/SL Toolbox/Drop To Ground &d")]
+        [MenuItem("SL Toolbox/Drop To Ground &d")]
         public static void Drop()
         {
             Transform[] selectedTransforms = Selection.transforms;

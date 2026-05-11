@@ -25,7 +25,7 @@ namespace RomainUTR.SLToolbox.Editor
         private Vector2 instanceScrollPos;
         private Vector2 inspectorScrollPos;
 
-        [MenuItem("Tools/SL Toolbox/Scriptable Object Browser")]
+        [MenuItem("SL Toolbox/Scriptable Object Browser", priority = 0)]
         public static void ShowWindow()
         {
             var window = GetWindow<SOBrowserWindow>("Scriptable Objects Browser");

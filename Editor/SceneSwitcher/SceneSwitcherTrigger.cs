@@ -37,7 +37,7 @@ namespace RomainUTR.SLToolbox.Editor
             }
         }
 
-        [MenuItem("Tools/SL Toolbox/Scene Switcher %#S", priority = 0)]
+        [MenuItem("SL Toolbox/Scene Switcher %#S", priority = 0)]
         public static void ShowSceneBrowserPopUp()
         {
             Rect rect = new Rect(200, 200, 1, 1);

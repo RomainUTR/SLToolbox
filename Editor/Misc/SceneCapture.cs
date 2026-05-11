@@ -6,7 +6,7 @@ namespace RomainUTR.SLToolbox.Editor
 {
     public static class ScreenshotTool
     {
-        [MenuItem("Tools/SL Toolbox/Take High-Res Screenshot %#k")]
+        [MenuItem("SL Toolbox/Take High-Res Screenshot %#k")]
         public static void TakeScreenshot()
         {
             string folderPath = Path.Combine(Directory.GetParent(Application.dataPath).FullName, "Screenshots");

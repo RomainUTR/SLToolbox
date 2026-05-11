@@ -5,7 +5,7 @@ namespace RomainUTR.SLToolbox.Editor
 {
     public static class SmartGrouper
     {
-        [MenuItem("Tools/SL Toolbox/ Group Selected %g")]
+        [MenuItem("SL Toolbox/ Group Selected %g")]
         private static void GroupSelected()
         {
             if (Selection.gameObjects.Length == 0) return;

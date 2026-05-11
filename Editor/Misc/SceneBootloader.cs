@@ -6,7 +6,7 @@ namespace RomainUTR.SLToolbox.Editor
 {
     public static class SceneBootloader
     {
-        const string MenuPath = "Tools/SL Toolbox/Play From First Scene";
+        const string MenuPath = "SL Toolbox/Play From First Scene";
 
         [MenuItem(MenuPath)]
         private static void TogglePlayModeStartScene()
