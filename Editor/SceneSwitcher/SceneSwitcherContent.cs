@@ -13,9 +13,6 @@ namespace RomainUTR.SLToolbox.Editor
         private Vector2 scrollPos;
         private string[] allScenePaths;
 
-        private const string PREFS_KEY = "RomainUTR_SLToolbox_FavScenes";
-        private List<string> favoriteScenes = new List<string>();
-
         public SceneSwitcherContent()
         {
             allScenePaths = AssetDatabase.FindAssets("t:Scene")
@@ -23,7 +20,7 @@ namespace RomainUTR.SLToolbox.Editor
                 .Where(path => path.StartsWith("Assets/"))
                 .ToArray();
 
-            LoadFavorites();
+            SLToolboxPreferences.Values = SLToolboxValues.Load();
         }
 
         public override Vector2 GetWindowSize()
@@ -41,8 +38,8 @@ namespace RomainUTR.SLToolbox.Editor
                 .Where(path => path.IndexOf(searchQuery, System.StringComparison.OrdinalIgnoreCase) >= 0)
                 .ToArray();
 
-            var favScenesToDisplay = filteredScenes.Where(path => favoriteScenes.Contains(path)).ToArray();
-            var otherScenesToDisplay = filteredScenes.Where(path => !favoriteScenes.Contains(path)).ToArray();
+            var favScenesToDisplay = filteredScenes.Where(path => SLToolboxPreferences.Values.favoriteScenes.Contains(path)).ToArray();
+            var otherScenesToDisplay = filteredScenes.Where(path => !SLToolboxPreferences.Values.favoriteScenes.Contains(path)).ToArray();
 
             if (favScenesToDisplay.Length > 0)
             {
@@ -97,7 +94,8 @@ namespace RomainUTR.SLToolbox.Editor
 
             if (isFavorite)
             {
-                GUI.color = SLToolboxPreferences.GetStarFavoriteColor();
+                ColorUtility.TryParseHtmlString(SLToolboxPreferences.Values.DEFAULT_HEX_COLOR, out Color starColor);
+                GUI.color = starColor;
             }
 
             if (GUILayout.Button(starIcon, EditorStyles.label, GUILayout.Width(20)))
@@ -119,39 +117,18 @@ namespace RomainUTR.SLToolbox.Editor
             GUILayout.EndHorizontal();
         }
 
-        private void LoadFavorites()
-        {
-            string savedData = EditorPrefs.GetString(PREFS_KEY, "");
-
-            if (!string.IsNullOrEmpty(savedData))
-            {
-                string[] paths = savedData.Split(',');
-                favoriteScenes = new List<string>(paths);
-            }
-            else
-            {
-                favoriteScenes = new List<string>();
-            }
-        }
-
         private void ToggleFavorite(string path)
         {
-            if (favoriteScenes.Contains(path))
+            if (SLToolboxPreferences.Values.favoriteScenes.Contains(path))
             {
-                favoriteScenes.Remove(path);
+                SLToolboxPreferences.Values.favoriteScenes.Remove(path);
             }
             else
             {
-                favoriteScenes.Add(path);
+                SLToolboxPreferences.Values.favoriteScenes.Add(path);
             }
 
-            SaveFavorites();
-        }
-
-        private void SaveFavorites()
-        {
-            string dataToSave = string.Join(",", favoriteScenes);
-            EditorPrefs.SetString(PREFS_KEY, dataToSave);
+            SLToolboxPreferences.Values.Save();
         }
 
         private void CreateNewScene()

@@ -16,6 +16,10 @@ namespace RomainUTR.SLToolbox.Editor
                 if (_values == null) _values = SLToolboxValues.Load();
                 return _values;
             }
+            set
+            {
+                _values = value;
+            }
         }
 
         public static Color GetStarFavoriteColor()

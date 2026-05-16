@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -14,6 +15,9 @@ namespace RomainUTR.SLToolbox.Editor
         public string assetSSOPath = "Assets/Data/SSO/";
         public string assetRSOPath = "Assets/Data/RSO/";
         public string assetRSEPath = "Assets/Data/Events/";
+        public string COLOR_PREF_KEY = "RomainUTR_SLToolbox_StarColor";
+        public string DEFAULT_HEX_COLOR = "#FFCA28";
+        public List<string> favoriteScenes = new List<string>();
 
         private static readonly string FilePath = Path.Combine("ProjectSettings", "SLToolbox_Preferences.json");
 
