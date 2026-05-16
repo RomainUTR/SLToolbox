@@ -1,0 +1,13 @@
+using System;
+
+[Serializable]
+public class #CLASSNAME#
+{
+    public string name;
+    
+    // Default Contruct
+    public #CLASSNAME#()
+    {
+        
+    }
+}

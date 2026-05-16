@@ -10,7 +10,7 @@ namespace RomainUTR.SLToolbox.Editor
         public enum TemplateType
         {
             MonoBehaviour,
-            ScriptableObject,
+            StaticScriptableObject,
             RuntimeScriptableEvent,
             RuntimeScriptableObject,
             Class
@@ -74,7 +74,7 @@ namespace RomainUTR.SLToolbox.Editor
         {
             switch (type)
             {
-                case TemplateType.ScriptableObject: return "SSO_";
+                case TemplateType.StaticScriptableObject: return "SSO_";
                 case TemplateType.RuntimeScriptableObject: return "RSO_";
                 case TemplateType.RuntimeScriptableEvent: return "RSE_";
                 case TemplateType.MonoBehaviour: return "";
@@ -87,7 +87,7 @@ namespace RomainUTR.SLToolbox.Editor
         {
             switch (type)
             {
-                case TemplateType.ScriptableObject: return SLToolboxPreferences.Values.ssoPath;
+                case TemplateType.StaticScriptableObject: return SLToolboxPreferences.Values.ssoPath;
                 case TemplateType.RuntimeScriptableObject: return SLToolboxPreferences.Values.rsoPath;
                 case TemplateType.RuntimeScriptableEvent: return SLToolboxPreferences.Values.rsePath;
                 case TemplateType.Class: return SLToolboxPreferences.Values.classPath;
@@ -99,7 +99,7 @@ namespace RomainUTR.SLToolbox.Editor
         {
             switch (type)
             {
-                case TemplateType.ScriptableObject: return SLToolboxPreferences.Values.assetSSOPath;
+                case TemplateType.StaticScriptableObject: return SLToolboxPreferences.Values.assetSSOPath;
                 case TemplateType.RuntimeScriptableObject: return SLToolboxPreferences.Values.assetRSOPath;
                 case TemplateType.RuntimeScriptableEvent: return SLToolboxPreferences.Values.assetRSEPath;
                 default: return "Assets/";
@@ -121,7 +121,7 @@ namespace RomainUTR.SLToolbox.Editor
                 return;
             }
 
-            if (selectedTemplate == TemplateType.RuntimeScriptableObject || selectedTemplate == TemplateType.ScriptableObject || selectedTemplate == TemplateType.RuntimeScriptableEvent)
+            if (selectedTemplate == TemplateType.RuntimeScriptableObject || selectedTemplate == TemplateType.StaticScriptableObject || selectedTemplate == TemplateType.RuntimeScriptableEvent)
             {
                 string targetAssetFolder = GetAssetPathForTemplate(selectedTemplate);
 
@@ -145,91 +145,22 @@ namespace RomainUTR.SLToolbox.Editor
 
         private string GetTemplateContent(TemplateType type)
         {
-            switch (type)
+            string templateFileName = "Template_" + type.ToString();
+            string[] guids = AssetDatabase.FindAssets(templateFileName + " t:TextAsset");
+
+            if (guids.Length > 0)
             {
-                case TemplateType.MonoBehaviour:
-                    return @"using UnityEngine;
+                string path = AssetDatabase.GUIDToAssetPath(guids[0]);
+                TextAsset textAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(path);
 
-public class #CLASSNAME# : MonoBehaviour
-{
-    //[Header(""Settings"")]
-    //[Header(""References"")]
-    //[Header(""Input"")]
-    //[Header(""Output"")]
-
-    private void Start()
-    {
-        
-    }
-
-    private void Update()
-    {
-        
-    }
-}";
-
-                case TemplateType.ScriptableObject:
-                    return @"using UnityEngine;
-
-[CreateAssetMenu(fileName = ""#CLASSNAME#"", menuName = ""Data/SSO/#CLASSNAME#"")]
-public class #CLASSNAME# : ScriptableObject
-{
-    [Header(""Static Data"")]
-    public string description;
-}";
-
-                case TemplateType.RuntimeScriptableObject:
-                    return @"using UnityEngine;
-
-[CreateAssetMenu(fileName = ""#CLASSNAME#"", menuName = ""Data/RSO/#CLASSNAME#"")]
-public class #CLASSNAME# : ScriptableObject
-{
-    [Header(""Runtime Value"")]
-    public float initialValue;
-    
-    [HideInInspector]
-    public float RuntimeValue;
-
-    private void OnEnable()
-    {
-        // Resets the value when the game starts
-        RuntimeValue = initialValue;
-    }
-}";
-
-                case TemplateType.RuntimeScriptableEvent:
-                    return @"using UnityEngine;
-using UnityEngine.Events;
-
-[CreateAssetMenu(fileName = ""#CLASSNAME#"", menuName = ""Events/#CLASSNAME#"")]
-public class #CLASSNAME# : ScriptableObject
-{
-    public event UnityAction OnEventRaised;
-
-    public void Raise()
-    {
-        OnEventRaised?.Invoke();
-    }
-}";
-
-                case TemplateType.Class:
-                    return @"using System;
-
-[Serializable]
-public class #CLASSNAME#
-{
-    public string name;
-    
-    // Default Contruct
-    public #CLASSNAME#()
-    {
-        
-    }
-}";
-
-                default:
-                    return "";
+                if (textAsset != null)
+                {
+                    return textAsset.text;
+                }
             }
+
+            Debug.LogError($"SL Toolbox: Impossible de trouver le template {templateFileName}.txt !");
+            return "";
         }
 
         [UnityEditor.Callbacks.DidReloadScripts]

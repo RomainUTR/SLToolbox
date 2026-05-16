@@ -1,0 +1,17 @@
+using UnityEngine;
+
+[CreateAssetMenu(fileName = "#CLASSNAME#", menuName = "Data/RSO/#CLASSNAME#")]
+public class #CLASSNAME# : ScriptableObject
+{
+    [Header("Runtime Value")]
+    public float initialValue;
+    
+    [HideInInspector]
+    public float RuntimeValue;
+
+    private void OnEnable()
+    {
+        // Resets the value when the game starts
+        RuntimeValue = initialValue;
+    }
+}

@@ -1,0 +1,8 @@
+using UnityEngine;
+
+[CreateAssetMenu(fileName = "#CLASSNAME#", menuName = "Data/SSO/#CLASSNAME#")]
+public class #CLASSNAME# : ScriptableObject
+{
+    [Header("Static Data")]
+    public string description;
+}
