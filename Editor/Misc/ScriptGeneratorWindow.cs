@@ -159,7 +159,7 @@ namespace RomainUTR.SLToolbox.Editor
                 }
             }
 
-            Debug.LogError($"SL Toolbox: Impossible de trouver le template {templateFileName}.txt !");
+            Debug.LogError($"SL Toolbox: I can't find the template {templateFileName}.txt !");
             return "";
         }
 
