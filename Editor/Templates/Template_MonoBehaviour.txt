@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class #CLASSNAME# : MonoBehaviour
 {
-    //[Header(""Settings"")]
-    //[Header(""References"")]
-    //[Header(""Input"")]
-    //[Header(""Output"")]
+    //[Header("Settings")]
+    //[Header("References")]
+    //[Header("Input")]
+    //[Header("Output")]
 
     private void Start()
     {
