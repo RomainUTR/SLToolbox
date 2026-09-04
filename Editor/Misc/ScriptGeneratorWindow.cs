@@ -35,7 +35,7 @@ namespace RomainUTR.SLToolbox.Editor
             GUILayout.Label("Create New Script", EditorStyles.boldLabel);
 
             GUI.SetNextControlName("ClassNameField");
-            targetBaseName = EditorGUILayout.TextField(targetBaseName, targetBaseName);
+            targetBaseName = EditorGUILayout.TextField("Name of the script", targetBaseName);
             selectedTemplate = (TemplateType)EditorGUILayout.EnumPopup("Template", selectedTemplate);
 
             GUILayout.Space(10);
