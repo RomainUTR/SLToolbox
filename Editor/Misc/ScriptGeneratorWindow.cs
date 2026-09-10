@@ -13,7 +13,8 @@ namespace RomainUTR.SLToolbox.Editor
             StaticScriptableObject,
             RuntimeScriptableEvent,
             RuntimeScriptableObject,
-            Class
+            Class,
+            Singleton
         }
 
         private string targetBaseName = "NewScript";
@@ -79,6 +80,7 @@ namespace RomainUTR.SLToolbox.Editor
                 case TemplateType.RuntimeScriptableEvent: return "RSE_";
                 case TemplateType.MonoBehaviour: return "";
                 case TemplateType.Class: return "";
+                case TemplateType.Singleton: return "";
                 default: return "";
             }
         }

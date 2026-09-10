@@ -1,0 +1,22 @@
+using UnityEngine;
+
+public class #CLASSNAME# : MonoBehaviour
+{
+    //[Header("Settings")]
+    //[Header("References")]
+    //[Header("Input")]
+    //[Header("Output")]
+
+    public static #CLASSNAME# Instance { get; private set; }
+
+    private void Awake() 
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        
+        Instance = this;
+    }
+}
