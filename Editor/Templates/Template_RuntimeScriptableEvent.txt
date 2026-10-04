@@ -1,13 +1,18 @@
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
 
+using RomainUTR.SLToolbox.Runtime;
+
 [CreateAssetMenu(fileName = "#CLASSNAME#", menuName = "Events/#CLASSNAME#")]
-public class #CLASSNAME# : ScriptableObject
+public class #CLASSNAME# : BaseEventRSE
 {
     public event UnityAction OnEventRaised;
-
-    public void Raise()
+    
+    public void Raise([CallerMemberName] string callerName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
     {
+        RecordEvent(callerName, sourceFilePath, sourceLineNumber);
         OnEventRaised?.Invoke();
     }
 }
